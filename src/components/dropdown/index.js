@@ -214,10 +214,15 @@ export default class Dropdown extends PureComponent {
       animationDuration,
       absoluteRTLLayout,
       useNativeDriver,
+      onDropDownPress,
+      includesRipple
     } = this.props;
 
     if (disabled) {
       return;
+    }
+    if (onDropDownPress && 'function' === typeof onDropDownPress) {
+      onDropDownPress();
     }
 
     let itemCount = data.length;
@@ -229,7 +234,9 @@ export default class Dropdown extends PureComponent {
       event.nativeEvent.locationX -= this.rippleInsets().left;
 
       /* Start ripple directly from event */
-      this.ripple.startRipple(event);
+      if (includesRipple) {
+        this.ripple.startRipple(event); 
+      }
     }
 
     if (!itemCount) {
@@ -667,6 +674,7 @@ export default class Dropdown extends PureComponent {
       disabled,
       itemPadding,
       dropdownPosition,
+      includesRipple,
     } = props;
 
     let { left, top, width, opacity, selected, modal } = this.state;
@@ -729,7 +737,7 @@ export default class Dropdown extends PureComponent {
         <TouchableWithoutFeedback {...touchableProps}>
           <View pointerEvents='box-only'>
             {this.renderBase(props)}
-            {this.renderRipple()}
+            {includesRipple && this.renderRipple()}
           </View>
         </TouchableWithoutFeedback>
 
